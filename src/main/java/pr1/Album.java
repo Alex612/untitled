@@ -13,34 +13,13 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Entity
 @Table(name = "album")
 public class Album implements Serializable {
+
     private Long id;
     private String title;
     private Date releaseDate;
     private int version;
+
     private Singer singer;
-    private Set<Instrument> instruments = new HashSet<>();
-
-
-    @ManyToMany
-    @JoinTable(name = "singer_instrument",joinColumns = @JoinColumn(name = "SINGER_ID"),
-            inverseJoinColumns = @JoinColumn(name = "INSTRUMENT_ID"))
-    public Set<Instrument> getInstruments(){
-        return instruments;
-    }
-
-    public void setInstruments(Set<Instrument> instruments) {
-        this.instruments = instruments;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "SINGER_ID")
-    public Singer getSinger(){
-        return this.singer;
-    }
-
-    public void setSinger(Singer singer) {
-        this.singer = singer;
-    }
 
     public void setId(Long id) {
         this.id = id;
@@ -49,29 +28,39 @@ public class Album implements Serializable {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "ID")
-    public Long getId(){
+    public Long getId() {
         return this.id;
     }
 
     @Version
     @Column(name = "VERSION")
-    public int getVersion(){
+    public int getVersion() {
         return version;
     }
 
+    @ManyToOne
+    @JoinColumn(name = "SINGER_ID")
+    public Singer getSinger() {
+        return this.singer;
+    }
+
     @Column
-    public String getTitle(){
+    public String getTitle() {
         return this.title;
     }
 
     @Temporal(TemporalType.DATE)
     @Column(name = "RELEASE_DATE")
-    public Date getReleaseDate(){
+    public Date getReleaseDate() {
         return this.releaseDate;
     }
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public void setSinger(Singer singer) {
+        this.singer = singer;
     }
 
     public void setReleaseDate(Date releaseDate) {
@@ -82,10 +71,9 @@ public class Album implements Serializable {
         this.version = version;
     }
 
-
-
     @Override
-    public String toString(){
-        return "AlbumID - " + id + " Title -" + title + " ReleaseDate - " + releaseDate;
+    public String toString() {
+        return "Album - Id: " + id + ", Singer id: " + singer.getId()
+                + ", Title: " + title + ", Release Date: " + releaseDate;
     }
 }

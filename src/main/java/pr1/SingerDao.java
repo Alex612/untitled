@@ -1,5 +1,6 @@
 package pr1;
 
+import pr1.Singer;
 import java.util.List;
 
 public interface SingerDao {
@@ -7,5 +8,5 @@ public interface SingerDao {
     List<Singer> findAllWithAlbum();
     Singer findById(Long id);
     Singer save(Singer singer);
-    void delete(Singer contact);
+    void delete(Singer singer);
 }

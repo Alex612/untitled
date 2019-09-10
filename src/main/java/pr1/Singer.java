@@ -10,89 +10,72 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Entity
 @Table(name = "singer")
 @NamedQueries({
-        @NamedQuery(name = "Singer.findById",query = "select distinct s from Singers s " +
-                "left join fetch s.albums a " + "left join fetch s.instruments i" +
-                "where s.id = :id"),
-        @NamedQuery(name = "Singer.findAllWithAlbum",query = "select distinct s from Singers s " +
-                "left join fetch s.albums a " + "left join fetch s.instruments i")})
-public class Singer extends AbstractEntity {
-    public static final String FIND_SINGER_BY_ID = "Singer.findById";
-    public static final String FIND_ALL_WITH_ALBUM = "Singer.findAllWithAlbum";
-
-
+        @NamedQuery(name="Singer.findById",
+                query="select distinct s from Singer s " +
+                        "left join fetch s.albums a " +
+                        "left join fetch s.instruments i " +
+                        "where s.id = :id"),
+        @NamedQuery(name="Singer.findAllWithAlbum",
+                query="select distinct s from Singer s " +
+                        "left join fetch s.albums a " +
+                        "left join fetch s.instruments i")
+})
+public class Singer implements Serializable {
 
     private Long id;
-
-    @Column(name = "FIRST_NAME")
     private String firstName;
-    @Column(name = "LAST_NAME")
     private String lastName;
-    @ManyToMany
-    @JoinTable(name = "singer_instrument",joinColumns = @JoinColumn(name = "SINGER_ID"),inverseJoinColumns = @JoinColumn(name = "INSTRUMENT_ID"))
-    private Set<Instrument> instruments =new HashSet<>();
-    @Temporal(TemporalType.DATE)
-    @Column(name = "BIRTH_DATE")
     private Date birthDate;
     private int version;
-    @OneToMany(mappedBy = "singer",cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<Album> albums = new HashSet<>();
+    private Set<Instrument> instruments = new HashSet<>();
 
-    @OneToMany(mappedBy = "singer",cascade = CascadeType.ALL,orphanRemoval = true)
-    public Set<Album> getAlbums(){
-        return albums;
-    }
-
-
-
-
-
-    public boolean addAlbum(Album album){
-        album.setSinger(this);
-        return getAlbums().add(album);
-    }
-
-    public void setAlbums(Set<Album> albums) {
-        this.albums = albums;
-    }
-
-    public void setId(Long id){
+    public void setId(Long id) {
         this.id = id;
     }
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "ID")
-    public Long getId(){
+    public Long getId() {
         return this.id;
     }
 
     @Version
-    @Column(name = "INSTRUMENT")
-    public Set<Instrument> getInstruments(){
-        return instruments;
-    }
-
-
-    @Version
     @Column(name = "VERSION")
-    public int getVersion(){
+    public int getVersion() {
         return version;
     }
 
     @Column(name = "FIRST_NAME")
-    public String getFirstName(){
+    public String getFirstName() {
         return this.firstName;
     }
 
     @Column(name = "LAST_NAME")
-    public String getLastName(){
+    public String getLastName() {
         return this.lastName;
     }
 
     @Temporal(TemporalType.DATE)
     @Column(name = "BIRTH_DATE")
-    public Date getBirthDate(){
+    public Date getBirthDate() {
         return birthDate;
+    }
+
+    @OneToMany(mappedBy = "singer", cascade=CascadeType.ALL,
+            orphanRemoval=true)
+    public Set<Album> getAlbums() {
+        return albums;
+    }
+
+
+    @ManyToMany
+    @JoinTable(name = "singer_instrument",
+            joinColumns = @JoinColumn(name = "SINGER_ID"),
+            inverseJoinColumns = @JoinColumn(name = "INSTRUMENT_ID"))
+    public Set<Instrument> getInstruments() {
+        return instruments;
     }
 
     public void setFirstName(String firstName) {
@@ -103,6 +86,19 @@ public class Singer extends AbstractEntity {
         this.lastName = lastName;
     }
 
+    public boolean addAlbum(Album album) {
+        album.setSinger(this);
+        return getAlbums().add(album);
+    }
+
+    public void removeAlbum(Album album) {
+        getAlbums().remove(album);
+    }
+
+    public void setAlbums(Set<Album> albums) {
+        this.albums = albums;
+    }
+
     public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
     }
@@ -111,13 +107,16 @@ public class Singer extends AbstractEntity {
         this.version = version;
     }
 
-    public String toString(){
-        return "Singer id - " + id + " FirstName - " + firstName + " LastName -" +lastName + " BirthDate - " + birthDate;
+    public void setInstruments(Set<Instrument> instruments) {
+        this.instruments = instruments;
     }
 
-    public void removeAlbum(Album album) {
+    public boolean addInstrument(Instrument instrument) {
+        return getInstruments().add(instrument);
     }
 
-    public void addInstrument(Instrument guitar) {
+    public String toString() {
+        return "Singer - Id: " + id + ", First name: " + firstName
+                + ", Last name: " + lastName + ", Birthday: " + birthDate;
     }
 }

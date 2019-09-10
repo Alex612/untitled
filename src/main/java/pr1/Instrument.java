@@ -12,10 +12,16 @@ public class Instrument implements Serializable {
     private String instrumentId;
     private Set<Singer> singers = new HashSet<>();
 
+    @Id
+    @Column(name = "INSTRUMENT_ID")
+    public String getInstrumentId() {
+        return this.instrumentId;
+    }
 
     @ManyToMany
-    @JoinTable(name = "singer_instrument",joinColumns = @JoinColumn(name = "INSTRUMENT_ID"),
-    inverseJoinColumns = @JoinColumn(name = "SINGER_ID"))
+    @JoinTable(name = "singer_instrument",
+            joinColumns = @JoinColumn(name = "INSTRUMENT_ID"),
+            inverseJoinColumns = @JoinColumn(name = "SINGER_ID"))
     public Set<Singer> getSingers() {
         return this.singers;
     }
@@ -24,19 +30,12 @@ public class Instrument implements Serializable {
         this.singers = singers;
     }
 
-
-    @Id
-    @Column(name = "INSTRUMENT_ID")
-    public String getInstrumentId(){
-        return this.instrumentId;
-    }
-
     public void setInstrumentId(String instrumentId) {
         this.instrumentId = instrumentId;
     }
 
     @Override
-    public String toString(){
-        return "Instrument - " + getInstrumentId();
+    public String toString() {
+        return "Instrument :" + getInstrumentId();
     }
 }
